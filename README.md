@@ -74,65 +74,86 @@ Client-server chat applications are versatile tools that facilitate real-time co
 Client-server chat applications are foundational to real-time communication over networks. They incorporate principles of socket programming, communication protocols, and security mechanisms to provide a seamless user experience. Understanding the basics of client-server chat applications is essential for developers involved in networked application development, as they form the backbone of various collaborative communication systems. As technology evolves, chat applications continue to adapt, incorporating new features and technologies to enhance user interaction and connectivity.
 
 ## PROGRAM:
-### `client.py`
-```python
+
+### Serverchat.py
+
+~~~
 
 import socket
 
+# Create socket
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+host = "127.0.0.1"
+port = 12345
+
+# Bind and listen
+server.bind((host, port))
+server.listen(1)
+
+print("Server waiting for connection...")
+
+conn, addr = server.accept()
+print("Connected to:", addr)
+
+while True:
+    # Receive message from client
+    client_msg = conn.recv(1024).decode()
+    print("Client:", client_msg)
+
+    if client_msg.lower() == "exit":
+        break
+
+    # Send message to client
+    msg = input("Server: ")
+    conn.send(msg.encode())
+
+    if msg.lower() == "exit":
+        break
+
+conn.close()
+server.close()
+
+~~~
+### Clientchat.py
+
+~~~
+import socket
+
+# Create socket
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-client.connect(("localhost", 9999))
+host = "127.0.0.1"
+port = 12345
 
-done=False
+# Connect to server
+client.connect((host, port))
 
-while not done:
-    client.send(input("Message ").encode('utf-8'))
-    msg = client.recv(1024).decode('utf-8')
+while True:
+    # Send message to server
+    msg = input("Client: ")
+    client.send(msg.encode())
 
-    if msg == 'quit':
-        done=True
-    else:
-        print(msg)
+    if msg.lower() == "exit":
+        break
 
+    # Receive reply from server
+    server_msg = client.recv(1024).decode()
+    print("Server:", server_msg)
 
-
-client.close()
-
-```
-### `server.py`
-```python
-import socket
-from base64 import decode
-from operator import truediv
-
-server =socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(('localhost', 9999))
-server.listen()
-client,addr=server.accept()
-
-done = False
-
-while not done:
-    msg = client.recv(1024).decode('utf-8')
-
-    if msg == 'quit':
-        done = True
-    else:
-        print(msg)
-
-    client.send(input("Message ").encode('utf-8'))
-
+    if server_msg.lower() == "exit":
+        break
 
 client.close()
-server.close()
-```
+
+~~~
+
 
 ## OUTPUT:
-![image](https://github.com/user-attachments/assets/3387a89a-890f-4322-900f-9aed4ceee866)
 
-
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8e1f0d6c-40a2-482e-b05e-f1f614902efd" />
 
 ## Result:
 
-Thus the study on Client Server Chat Applications has been performed
+Thus the study on Client Server Chat Applications has been performed.....
 
